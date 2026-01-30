@@ -29,10 +29,12 @@ steps:
 
   - name: gcr.io/cloud-builders/gsutil
     id: upload-functions
+    entrypoint: bash
     args:
+      - -c
       - |
-        cp /workspace/function_api.zip gs://${_FUNCTION_SOURCE_BUCKET}/function_api.zip
-        cp /workspace/function_thumbnail.zip gs://${_FUNCTION_SOURCE_BUCKET}/function_thumbnail.zip
+        gsutil cp /workspace/function_api.zip gs://${_FUNCTION_SOURCE_BUCKET}/function_api.zip
+        gsutil cp /workspace/function_thumbnail.zip gs://${_FUNCTION_SOURCE_BUCKET}/function_thumbnail.zip
 
   - name: hashicorp/terraform:1.6
     id: terraform-apply-functions
