@@ -16,3 +16,8 @@ variable "function_source_object" {
   description = "Cloud Functions source zip object name"
   default = "functions.zip"
 }
+
+variable "enable_functions" {
+  type    = bool
+  default = false
+}

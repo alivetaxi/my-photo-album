@@ -33,7 +33,7 @@ steps:
   - name: hashicorp/terraform:1.6
     id: terraform-apply-functions
     dir: terraform
-    args: ["apply", "-auto-approve"]
+    args: ["apply", "-auto-approve", "-var=enable_functions=true"]
     env:
       - TF_VAR_project_id=$PROJECT_ID
       - TF_VAR_region=${_REGION}
