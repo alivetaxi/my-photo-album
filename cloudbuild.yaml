@@ -14,7 +14,7 @@ steps:
       - TF_VAR_photo_bucket_name=${_PHOTO_BUCKET}
       - TF_VAR_function_source_bucket_name=${_FUNCTION_SOURCE_BUCKET}
 
-  - name: gcr.io/cloud-builders/bash
+  - name: gcr.io/cloud-builders/gcloud
     id: zip-functions
     entrypoint: bash
     args:
