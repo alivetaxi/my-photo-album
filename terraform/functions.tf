@@ -1,4 +1,6 @@
 resource "google_cloudfunctions2_function" "api" {
+  count = var.enable_functions ? 1 : 0
+
   name     = "photo-album-api"
   location = var.region
 
