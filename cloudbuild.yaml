@@ -28,7 +28,7 @@ steps:
     args:
       - cp
       - /workspace/functions.zip
-      - gs://$FUNCTION_SOURCE_BUCKET/functions.zip
+      - gs://${_FUNCTION_SOURCE_BUCKET}/functions.zip
 
   - name: hashicorp/terraform:1.6
     id: terraform-apply-functions
