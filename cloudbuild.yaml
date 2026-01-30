@@ -22,15 +22,17 @@ steps:
       - |
         apt-get update
         apt-get install -y zip
-        cd functions
-        zip -r /workspace/functions.zip .
+        cd functions/api
+        zip -r /workspace/function_api.zip .
+        cd ../thumbnail
+        zip -r /workspace/function_thumbnail.zip .
 
   - name: gcr.io/cloud-builders/gsutil
     id: upload-functions
     args:
-      - cp
-      - /workspace/functions.zip
-      - gs://${_FUNCTION_SOURCE_BUCKET}/functions.zip
+      - |
+        cp /workspace/function_api.zip gs://${_FUNCTION_SOURCE_BUCKET}/function_api.zip
+        cp /workspace/function_thumbnail.zip gs://${_FUNCTION_SOURCE_BUCKET}/function_thumbnail.zip
 
   - name: hashicorp/terraform:1.6
     id: terraform-apply-functions

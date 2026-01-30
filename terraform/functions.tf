@@ -8,7 +8,7 @@ resource "google_cloudfunctions2_function" "api" {
     source {
       storage_source {
         bucket = var.function_source_bucket_name
-        object = var.function_source_object
+        object = "function_api.zip"
       }
     }
   }
@@ -35,7 +35,7 @@ resource "google_cloudfunctions2_function" "thumbnail" {
     source {
       storage_source {
         bucket = var.function_source_bucket_name
-        object = var.function_source_object
+        object = "function_thumbnail.zip"
       }
     }
   }
