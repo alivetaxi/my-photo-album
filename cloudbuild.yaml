@@ -10,9 +10,9 @@ steps:
     args: ["apply", "-auto-approve"]
     env:
       - TF_VAR_project_id=$PROJECT_ID
-      - TF_VAR_region=$REGION
-      - TF_VAR_photo_bucket_name=$PHOTO_BUCKET
-      - TF_VAR_function_source_bucket_name=$FUNCTION_SOURCE_BUCKET
+      - TF_VAR_region=${_REGION}
+      - TF_VAR_photo_bucket_name=${_PHOTO_BUCKET}
+      - TF_VAR_function_source_bucket_name=${_FUNCTION_SOURCE_BUCKET}
 
   - name: gcr.io/cloud-builders/bash
     id: zip-functions
@@ -36,9 +36,9 @@ steps:
     args: ["apply", "-auto-approve"]
     env:
       - TF_VAR_project_id=$PROJECT_ID
-      - TF_VAR_region=$REGION
-      - TF_VAR_photo_bucket_name=$PHOTO_BUCKET
-      - TF_VAR_function_source_bucket_name=$FUNCTION_SOURCE_BUCKET
+      - TF_VAR_region=${_REGION}
+      - TF_VAR_photo_bucket_name=${_PHOTO_BUCKET}
+      - TF_VAR_function_source_bucket_name=${_FUNCTION_SOURCE_BUCKET}
 
 options:
   logging: CLOUD_LOGGING_ONLY

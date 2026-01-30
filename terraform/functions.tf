@@ -3,7 +3,7 @@ resource "google_cloudfunctions2_function" "api" {
   location = var.region
 
   build_config {
-    runtime     = "python311"
+    runtime     = "python312"
     entry_point = "main"
     source {
       storage_source {
@@ -28,7 +28,7 @@ resource "google_cloudfunctions2_function" "thumbnail" {
   location = var.region
 
   build_config {
-    runtime     = "python311"
+    runtime     = "python312"
     entry_point = "generate_thumbnail"
     source {
       storage_source {
@@ -42,9 +42,6 @@ resource "google_cloudfunctions2_function" "thumbnail" {
     service_account_email = google_service_account.functions.email
     available_memory      = "1024Mi"
     timeout_seconds       = 60
-    environment_variables = {
-      PHOTO_BUCKET = google_storage_bucket.photos.name
-    }
   }
 
   event_trigger {
