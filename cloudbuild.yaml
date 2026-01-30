@@ -20,6 +20,8 @@ steps:
     args:
       - -c
       - |
+        apt-get update
+        apt-get install -y zip
         cd functions
         zip -r /workspace/functions.zip .
 
