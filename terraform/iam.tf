@@ -28,3 +28,9 @@ resource "google_storage_bucket_iam_member" "eventarc_photo_viewer" {
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
 }
+
+resource "google_project_iam_member" "gcs_pubsub_publisher" {
+  project = data.google_project.current.project_id
+  role    = "roles/pubsub.publisher"
+  member  = "serviceAccount:service-${data.google_project.current.number}@gs-project-accounts.iam.gserviceaccount.com"
+}
