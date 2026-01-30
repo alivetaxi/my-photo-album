@@ -1,19 +1,23 @@
 from google.cloud import storage, firestore
 from PIL import Image
 import io
+from cloudevents.http import CloudEvent
 
 db = firestore.Client()
 storage_client = storage.Client()
 
 
-def generate_thumbnail(event, context):
-    object_path = event["name"]
+def generate_thumbnail(cloud_event: CloudEvent):
+    data = cloud_event.data
+
+    object_path = data["name"]
+    bucket_name = data["bucket"]
 
     # 只處理 original IMAGE 檔
     if not object_path.startswith("albums/originals/"):
         return
 
-    bucket = storage_client.bucket(event["bucket"])
+    bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(object_path)
 
     # 找出對應的 photo
