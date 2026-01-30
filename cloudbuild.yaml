@@ -1,4 +1,19 @@
 steps:
+  - name: hashicorp/terraform:1.6
+    id: terraform-init
+    dir: terraform
+    args: ["init", "-input=false"]
+
+  - name: hashicorp/terraform:1.6
+    id: terraform-apply-infra
+    dir: terraform
+    args: ["apply", "-auto-approve"]
+    env:
+      - TF_VAR_project_id=$PROJECT_ID
+      - TF_VAR_region=$REGION
+      - TF_VAR_photo_bucket_name=$PHOTO_BUCKET
+      - TF_VAR_function_source_bucket_name=$FUNCTION_SOURCE_BUCKET
+
   - name: gcr.io/cloud-builders/bash
     id: zip-functions
     entrypoint: bash
@@ -16,12 +31,7 @@ steps:
       - gs://$FUNCTION_SOURCE_BUCKET/functions.zip
 
   - name: hashicorp/terraform:1.6
-    id: terraform-init
-    dir: terraform
-    args: ["init", "-input=false"]
-
-  - name: hashicorp/terraform:1.6
-    id: terraform-apply
+    id: terraform-apply-functions
     dir: terraform
     args: ["apply", "-auto-approve"]
     env:
@@ -29,7 +39,6 @@ steps:
       - TF_VAR_region=$REGION
       - TF_VAR_photo_bucket_name=$PHOTO_BUCKET
       - TF_VAR_function_source_bucket_name=$FUNCTION_SOURCE_BUCKET
-      - TF_VAR_function_source_object=functions.zip
 
 options:
   logging: CLOUD_LOGGING_ONLY

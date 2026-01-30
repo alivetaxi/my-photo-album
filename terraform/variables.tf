@@ -14,4 +14,5 @@ variable "function_source_bucket_name" {
 
 variable "function_source_object" {
   description = "Cloud Functions source zip object name"
+  default = "functions.zip"
 }

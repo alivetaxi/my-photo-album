@@ -17,7 +17,6 @@ resource "google_storage_bucket" "function_source" {
 
   uniform_bucket_level_access = true
 
-  # 建議開 versioning，避免 source 被誤覆蓋
   versioning {
     enabled = true
   }
