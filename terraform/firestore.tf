@@ -1,7 +1,7 @@
 resource "google_firestore_database" "default" {
   name        = "(default)"
   location_id = var.region
-  type        = "NATIVE"
+  type        = "FIRESTORE_NATIVE"
 }
 
 resource "google_firestore_index" "photos_by_album" {
