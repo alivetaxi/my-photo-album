@@ -24,7 +24,7 @@ resource "google_storage_bucket_iam_member" "functions_source_read" {
 data "google_project" "current" {}
 
 resource "google_storage_bucket_iam_member" "eventarc_photo_viewer" {
-  bucket = google_storage_bucket.photo.name
+  bucket = google_storage_bucket.photos.name
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
 }
