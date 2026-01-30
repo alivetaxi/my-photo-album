@@ -1,0 +1,4 @@
+firebase-admin
+google-cloud-firestore
+google-cloud-storage
+Pillow
