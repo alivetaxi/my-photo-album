@@ -5,7 +5,9 @@ resource "google_project_service" "apis" {
     "firestore.googleapis.com",
     "storage.googleapis.com",
     "eventarc.googleapis.com",
-    "iam.googleapis.com"
+    "iam.googleapis.com",
+    "run.googleapis.com",
+    "artifactregistry.googleapis.com"
   ])
 
   service = each.value
