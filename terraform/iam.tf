@@ -22,7 +22,7 @@ resource "google_project_iam_member" "functions_eventarc_receiver" {
 }
 
 resource "google_service_account_iam_member" "functions_token_creator" {
-  service_account_id = google_service_account.functions.name
+  service_account_id = "projects/${var.project_id}/serviceAccounts/${google_service_account.functions.email}"
   role   = "roles/iam.serviceAccountTokenCreator"
   member = "serviceAccount:${google_service_account.functions.email}"
 }
