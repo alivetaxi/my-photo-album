@@ -1,6 +1,9 @@
+import logging
+
 from firebase_admin import auth as firebase_auth
 from google.cloud import firestore
 
+logger = logging.getLogger(__name__)
 db = firestore.Client()
 
 class AuthContext:
@@ -23,7 +26,7 @@ def get_auth_context(request) -> AuthContext:
         uid = decoded["uid"]
         email = decoded["email"]
     except Exception:
-        # Token 無效 → 視為未登入
+        logger.exception("Failed to verify ID token")
         return AuthContext()
 
     # 查詢角色
