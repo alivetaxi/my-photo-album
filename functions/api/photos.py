@@ -1,17 +1,26 @@
 import os
 from datetime import timedelta
+from google.auth import default, impersonated_credentials
 from google.cloud import firestore, storage
 from auth import get_auth_context, require_admin, require_family_or_admin
 from errors import unauthorized, forbidden
 from utils import encode_cursor, decode_cursor
 
-db = firestore.Client()
-storage_client = storage.Client()
-
 VALID_MEDIA_TYPES = {"IMAGE", "LIVE_PHOTO", "VIDEO"}
 VALID_FILE_TYPES = {"IMAGE", "VIDEO"}
 PHOTO_BUCKET = os.environ.get("PHOTO_BUCKET")
 SERVICE_ACCOUNT_EMAIL = os.environ.get("SERVICE_ACCOUNT_EMAIL")
+
+source_creds, _ = default()
+signer_creds = impersonated_credentials.Credentials(
+    source_credentials=source_creds,
+    target_principal=SERVICE_ACCOUNT_EMAIL,
+    target_scopes=["https://www.googleapis.com/auth/cloud-platform"],
+    lifetime=300,
+)
+
+db = firestore.Client()
+storage_client = storage.Client(credentials=signer_creds)
 
 def list_photos(request, album_id):
     ctx = get_auth_context(request)
