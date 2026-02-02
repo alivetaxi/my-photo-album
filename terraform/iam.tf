@@ -15,12 +15,6 @@ resource "google_project_iam_member" "functions_firestore" {
   member  = "serviceAccount:${google_service_account.functions.email}"
 }
 
-resource "google_storage_bucket_iam_member" "functions_source_read" {
-  bucket = google_storage_bucket.function_source.name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${google_service_account.functions.email}"
-}
-
 data "google_project" "current" {}
 
 resource "google_storage_bucket_iam_member" "eventarc_photo_viewer" {
