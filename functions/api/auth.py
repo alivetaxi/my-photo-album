@@ -1,10 +1,16 @@
 import logging
 
+import firebase_admin
 from firebase_admin import auth as firebase_auth
 from google.cloud import firestore
 
 logger = logging.getLogger(__name__)
 db = firestore.Client()
+
+try:
+    firebase_admin.get_app()
+except ValueError:
+    firebase_admin.initialize_app()
 
 class AuthContext:
     def __init__(self, uid=None, email=None, role="GUEST"):
