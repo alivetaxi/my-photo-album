@@ -29,7 +29,7 @@ steps:
       - --service-account=${_FUNCTION_SERVICE_ACCOUNT}
       - --memory=512Mi
       - --timeout=60s
-      - --set-env-vars=PHOTO_BUCKET=${_PHOTO_BUCKET}
+      - --set-env-vars=PHOTO_BUCKET=${_PHOTO_BUCKET},SERVICE_ACCOUNT_EMAIL=${_FUNCTION_SERVICE_ACCOUNT}
 
   - name: gcr.io/cloud-builders/gcloud
     id: deploy-function-thumbnail

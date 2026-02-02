@@ -11,6 +11,7 @@ storage_client = storage.Client()
 VALID_MEDIA_TYPES = {"IMAGE", "LIVE_PHOTO", "VIDEO"}
 VALID_FILE_TYPES = {"IMAGE", "VIDEO"}
 PHOTO_BUCKET = os.environ.get("PHOTO_BUCKET")
+SERVICE_ACCOUNT_EMAIL = os.environ.get("SERVICE_ACCOUNT_EMAIL")
 
 def list_photos(request, album_id):
     ctx = get_auth_context(request)
@@ -165,7 +166,8 @@ def get_upload_url(request):
         version="v4",
         expiration=timedelta(minutes=10),
         method="PUT",
-        content_type=content_type
+        content_type=content_type,
+        service_account_email=SERVICE_ACCOUNT_EMAIL
     )
 
     return {
