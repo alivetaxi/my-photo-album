@@ -21,6 +21,12 @@ resource "google_project_iam_member" "functions_eventarc_receiver" {
   member  = "serviceAccount:${google_service_account.functions.email}"
 }
 
+resource "google_service_account_iam_member" "functions_token_creator" {
+  service_account_id = google_service_account.functions.name
+  role   = "roles/iam.serviceAccountTokenCreator"
+  member = "serviceAccount:${google_service_account.functions.email}"
+}
+
 data "google_project" "current" {}
 
 resource "google_storage_bucket_iam_member" "eventarc_photo_viewer" {
