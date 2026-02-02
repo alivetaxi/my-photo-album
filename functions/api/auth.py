@@ -4,8 +4,9 @@ from google.cloud import firestore
 db = firestore.Client()
 
 class AuthContext:
-    def __init__(self, uid=None, role="ANONYMOUS"):
+    def __init__(self, uid=None, email=None, role="GUEST"):
         self.uid = uid
+        self.email = email
         self.role = role
 
 def get_auth_context(request) -> AuthContext:
@@ -20,6 +21,7 @@ def get_auth_context(request) -> AuthContext:
     try:
         decoded = firebase_auth.verify_id_token(token)
         uid = decoded["uid"]
+        email = decoded["email"]
     except Exception:
         # Token 無效 → 視為未登入
         return AuthContext()
@@ -27,10 +29,10 @@ def get_auth_context(request) -> AuthContext:
     # 查詢角色
     user_doc = db.collection("users").document(uid).get()
     if not user_doc.exists:
-        return AuthContext(uid=uid, role="GUEST")
+        return AuthContext(uid=uid, email=email, role="GUEST")
 
     role = user_doc.to_dict().get("role", "GUEST")
-    return AuthContext(uid=uid, role=role)
+    return AuthContext(uid=uid, email=email, role=role)
 
 
 def require_login(ctx):

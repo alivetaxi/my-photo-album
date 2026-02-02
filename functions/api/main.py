@@ -7,6 +7,7 @@ from photos import (
     get_upload_url,
     retry_thumbnail
 )
+from users import get_me
 
 def main(request):
     """
@@ -14,6 +15,11 @@ def main(request):
     """
     path = request.path
     method = request.method
+
+    # -------- Users --------
+
+    if path == "/me" and method == "GET":
+        return get_me(request)
 
     # -------- Albums --------
 
