@@ -149,14 +149,14 @@ def get_upload_url(request):
         return forbidden()
 
     body = request.get_json(silent=True) or {}
-    md5 = body.get("md5")
+    sha256 = body.get("sha256")
     content_type = body.get("contentType")
 
-    if not md5 or not content_type:
-        return {"message": "md5 and contentType are required"}, 400
+    if not sha256 or not content_type:
+        return {"message": "sha256 and contentType are required"}, 400
 
-    # 使用 MD5 作為檔名（去重）
-    object_path = f"albums/originals/{md5}"
+    # 使用 sha256 作為檔名（去重）
+    object_path = f"albums/originals/{sha256}"
 
     bucket = storage_client.bucket(PHOTO_BUCKET)
     blob = bucket.blob(object_path)
