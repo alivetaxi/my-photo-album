@@ -55,9 +55,10 @@ resource "google_cloudfunctions2_function" "thumbnail" {
   }
 }
 
-resource "google_cloudfunctions2_function_iam_member" "api_public_invoker" {
-  project        = var.project_id
-  cloud_function = google_cloudfunctions2_function.api.name
+resource "google_cloud_run_service_iam_member" "api_public_invoker" {
+  project  = var.project_id
+  location = var.region
+  service  = google_cloudfunctions2_function.api.name
 
   role   = "roles/run.invoker"
   member = "allUsers"
