@@ -59,6 +59,6 @@ resource "google_cloudfunctions2_function_iam_member" "api_public_invoker" {
   project        = var.project_id
   cloud_function = google_cloudfunctions2_function.api.name
 
-  role   = "roles/cloudfunctions.invoker"
+  role   = "roles/run.invoker"
   member = "allUsers"
 }

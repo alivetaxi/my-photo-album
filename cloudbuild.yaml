@@ -1,19 +1,4 @@
 steps:
-  - name: hashicorp/terraform:1.6
-    id: terraform-init
-    dir: terraform
-    args: ["init", "-input=false"]
-
-  - name: hashicorp/terraform:1.6
-    id: terraform-apply-infra
-    dir: terraform
-    args: ["apply", "-auto-approve"]
-    env:
-      - TF_VAR_project_id=$PROJECT_ID
-      - TF_VAR_region=${_REGION}
-      - TF_VAR_photo_bucket_name=${_PHOTO_BUCKET}
-      - TF_VAR_function_source_bucket_name=${_FUNCTION_SOURCE_BUCKET}
-
   - name: gcr.io/cloud-builders/gcloud
     id: zip-functions
     entrypoint: bash
@@ -37,9 +22,14 @@ steps:
         gsutil cp /workspace/function_thumbnail.zip gs://${_FUNCTION_SOURCE_BUCKET}/function_thumbnail.zip
 
   - name: hashicorp/terraform:1.6
-    id: terraform-apply-functions
+    id: terraform-init
     dir: terraform
-    args: ["apply", "-auto-approve", "-var=enable_functions=true"]
+    args: ["init", "-input=false"]
+
+  - name: hashicorp/terraform:1.6
+    id: terraform-apply-infra
+    dir: terraform
+    args: ["apply", "-auto-approve"]
     env:
       - TF_VAR_project_id=$PROJECT_ID
       - TF_VAR_region=${_REGION}
