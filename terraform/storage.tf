@@ -8,4 +8,11 @@ resource "google_storage_bucket" "photos" {
   versioning {
     enabled = false
   }
+
+  cors {
+    origin          = var.cors_origins
+    method          = ["GET", "PUT", "POST", "HEAD"]
+    response_header = ["Content-Type", "x-goog-resumable"]
+    max_age_seconds = 3600
+  }
 }
