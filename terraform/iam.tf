@@ -40,3 +40,10 @@ resource "google_project_iam_member" "gcs_pubsub_publisher" {
   role    = "roles/pubsub.publisher"
   member  = "serviceAccount:service-${data.google_project.current.number}@gs-project-accounts.iam.gserviceaccount.com"
 }
+
+resource "google_cloud_run_v2_service_iam_member" "thumbnail_invoker" {
+  name     = "photo-thumbnail"
+  location = var.region
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
+}
