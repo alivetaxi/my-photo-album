@@ -47,3 +47,10 @@ resource "google_cloud_run_v2_service_iam_member" "thumbnail_invoker" {
   role     = "roles/run.invoker"
   member   = "serviceAccount:service-${data.google_project.current.number}@gcp-sa-eventarc.iam.gserviceaccount.com"
 }
+
+resource "google_cloud_run_v2_service_iam_member" "thumbnail_runtime_invoker" {
+  name     = "photo-thumbnail"
+  location = var.region
+  role     = "roles/run.invoker"
+  member   = "serviceAccount:${google_service_account.functions.email}"
+}
