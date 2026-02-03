@@ -93,8 +93,8 @@ def create_photo(request):
     for f in files:
         if f.get("type") not in VALID_FILE_TYPES:
             return {"message": "Invalid file type"}, 400
-        if not f.get("md5") or not f.get("gcsPath"):
-            return {"message": "Each file must have md5 and gcsPath"}, 400
+        if not f.get("sha256") or not f.get("gcsPath"):
+            return {"message": "Each file must have sha256 and gcsPath"}, 400
 
     # --- mediaType 對 files 的語意檢查（v1 最小） ---
     image_files = [f for f in files if f["type"] == "IMAGE"]
