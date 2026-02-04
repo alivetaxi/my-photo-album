@@ -9,6 +9,7 @@ storage_client = storage.Client()
 
 @functions_framework.cloud_event
 def generate_thumbnail(cloud_event: CloudEvent):
+    print(cloud_event)
     data = cloud_event.data
 
     object_path = data["name"]
