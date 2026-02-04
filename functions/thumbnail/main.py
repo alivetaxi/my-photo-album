@@ -2,11 +2,12 @@ from google.cloud import storage, firestore
 from PIL import Image
 import io
 from cloudevents.http import CloudEvent
+import functions_framework
 
 db = firestore.Client()
 storage_client = storage.Client()
 
-
+@functions_framework.cloud_event
 def generate_thumbnail(cloud_event: CloudEvent):
     data = cloud_event.data
 
