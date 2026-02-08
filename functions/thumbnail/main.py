@@ -1,8 +1,10 @@
 import io
 import os
+from datetime import datetime
 
 from google.cloud import storage, firestore
 from PIL import Image
+from PIL.ExifTags import TAGS
 from cloudevents.http import CloudEvent
 import functions_framework
 
@@ -45,6 +47,9 @@ def generate_thumbnail(cloud_event: CloudEvent):
         image_bytes = blob.download_as_bytes()
         img = Image.open(io.BytesIO(image_bytes))
         img.load()  # ensure image is fully loaded
+
+        taken_at = parse_exif_date(img)
+
         if img.mode not in ("RGB", "RGBA"):
             img = img.convert("RGB")
         elif img.mode == "RGBA":
@@ -69,7 +74,8 @@ def generate_thumbnail(cloud_event: CloudEvent):
             "thumb": {
                 "gcsPath": thumb_path
             },
-            "status": "READY"
+            "status": "READY",
+            "takenAt": taken_at.timestamp() if taken_at else photo.get("createdAt")
         })
 
     except Exception as e:
@@ -77,3 +83,25 @@ def generate_thumbnail(cloud_event: CloudEvent):
             "status": "FAILED",
             "lastError": str(e)
         })
+
+
+def parse_exif_date(img):
+    try:
+        exif = img.getexif()
+        if not exif:
+            return None
+
+        # Build tag-name map using public EXIF interface
+        exif_data = {
+            TAGS.get(tag_id): value
+            for tag_id, value in exif.items()
+            if tag_id in TAGS
+        }
+
+        raw_taken = exif_data.get("DateTimeOriginal")
+        if raw_taken:
+            # EXIF format: YYYY:MM:DD HH:MM:SS
+            return datetime.strptime(raw_taken, "%Y:%m:%d %H:%M:%S")
+    except Exception:
+        print("Failed to parse EXIF data")
+    return None
