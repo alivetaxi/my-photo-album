@@ -4,6 +4,7 @@ from photos import (
     create_photo,
     update_photo,
     delete_photo,
+    redirect_photo,
     get_upload_url,
     retry_thumbnail
 )
@@ -57,6 +58,9 @@ def main(request):
 
         if method == "DELETE":
             return delete_photo(request, photo_id)
+
+        if method == "GET":
+            return redirect_photo(request, photo_id)
 
     if path.startswith("/photos/") and path.endswith("/retry-thumbnail"):
         photo_id = path.split("/")[2]

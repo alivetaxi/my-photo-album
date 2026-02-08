@@ -151,6 +151,33 @@ def update_photo(request, photo_id):
     return "", 200
 
 
+def redirect_photo(request, photo_id):
+    ctx = get_auth_context(request)
+    if not ctx.uid:
+        return unauthorized()
+
+    snap = db.collection("photos").document(photo_id).get()
+    if not snap.exists:
+        return {"message": "Photo not found"}, 404
+    photo = snap.to_dict()
+
+    if photo["mediaType"] == "VIDEO":
+        gcs_path = photo["files"]["video"]["gcsPath"]
+    else:
+        gcs_path = photo["files"]["image"]["gcsPath"]
+
+    bucket = storage_client.bucket(PHOTO_BUCKET)
+    blob = bucket.blob(gcs_path)
+    signed_url = blob.generate_signed_url(
+        version="v4",
+        expiration=timedelta(minutes=10),
+        method="GET",
+        service_account_email=SERVICE_ACCOUNT_EMAIL
+    )
+
+    return "", 302, {"Location": signed_url}
+
+
 def delete_photo(request, photo_id):
     ctx = get_auth_context(request)
     if not ctx.uid:
