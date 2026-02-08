@@ -1,4 +1,5 @@
 import io
+import os
 
 from google.cloud import storage, firestore
 from PIL import Image
@@ -7,6 +8,8 @@ import functions_framework
 
 db = firestore.Client()
 storage_client = storage.Client()
+
+THUMB_BUCKET = os.environ["THUMBNAIL_BUCKET"]
 
 @functions_framework.cloud_event
 def generate_thumbnail(cloud_event: CloudEvent):
@@ -54,8 +57,10 @@ def generate_thumbnail(cloud_event: CloudEvent):
         out.seek(0)
 
         thumb_path = f"albums/thumb/{photo_id}.webp"
-        print(f"Uploading thumbnail to {thumb_path}")
-        bucket.blob(thumb_path).upload_from_string(
+        print(f"Uploading thumbnail to {thumb_path} in bucket {THUMB_BUCKET}")
+
+        thumb_bucket = storage_client.bucket(THUMB_BUCKET)
+        thumb_bucket.blob(thumb_path).upload_from_string(
             out.getvalue(),
             content_type="image/webp"
         )

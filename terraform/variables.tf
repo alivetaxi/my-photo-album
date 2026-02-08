@@ -6,7 +6,11 @@ variable "region" {
 }
 
 variable "photo_bucket_name" {
-  description = "Bucket for photos, videos and thumbnails"
+  description = "Bucket for photos and videos"
+}
+
+variable "thumbnail_bucket_name" {
+  description = "Bucket for thumbnails"
 }
 
 variable "cors_origins" {

@@ -12,6 +12,7 @@ steps:
       - TF_VAR_project_id=$PROJECT_ID
       - TF_VAR_region=${_REGION}
       - TF_VAR_photo_bucket_name=${_PHOTO_BUCKET}
+      - TF_VAR_thumbnail_bucket_name=${_THUMBNAIL_BUCKET}
       - TF_VAR_cors_origins=${_CORS_ORIGINS}
 
   - name: gcr.io/cloud-builders/gcloud
@@ -48,6 +49,7 @@ steps:
       - --service-account=${_FUNCTION_SERVICE_ACCOUNT}
       - --memory=1024Mi
       - --timeout=60s
+      - --set-env-vars=THUMBNAIL_BUCKET=${_THUMBNAIL_BUCKET}
 
 options:
   logging: CLOUD_LOGGING_ONLY
