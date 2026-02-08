@@ -56,7 +56,7 @@ def list_photos(request, album_id):
             "albumId": data["albumId"],
             "mediaType": data["mediaType"],
             "files": data["files"],
-            "thumbUrl": data.get("thumbUrl"),
+            "thumbPath": data.get("thumb", {}).get("gcsPath"),
             "description": data.get("description"),
             "status": data["status"],
             "createdAt": data["createdAt"]
