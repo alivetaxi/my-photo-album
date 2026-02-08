@@ -1,0 +1,64 @@
+@if (service.loading()) {
+  <p>Loading photos...</p>
+}
+
+@if (!service.loading() && service.photos().length === 0) {
+  <p>No photos.</p>
+}
+
+@if (service.error()) {
+  <p class="error">{{ service.error() }}</p>
+}
+
+@if (auth.isAdmin()) {
+  <button (click)="openUpload()">Upload photos</button>
+}
+
+@if (showUpload()) {
+  <app-upload-modal
+    [albumId]="albumId"
+    (closed)="closeUpload()"
+    (uploaded)="onUploaded()"
+  />
+}
+
+<div class="photo-grid">
+  @for (photo of service.photos(); track photo.id; let i = $index) {
+    <div class="photo-card">
+
+      <img
+        [src]="'/thumb/' + photo.thumbPath || '/assets/placeholder.png'"
+        (click)="openViewer(i)"
+      />
+
+      @if (photo.description) {
+        <p class="desc">{{ photo.description }}</p>
+      }
+
+      @if (canRetry(photo)) {
+        <button class="retry-btn" (click)="retryThumbnail(photo)">
+          Retry thumbnail
+        </button>
+      }
+
+    </div>
+  }
+</div>
+
+@if (service.hasMore()) {
+  <button
+    class="load-more"
+    (click)="loadMore()"
+    [disabled]="service.loading()"
+  >
+    Load more
+  </button>
+}
+
+@if (selectedIndex() !== null) {
+  <app-photo-viewer
+    [photos]="service.photos()"
+    [startIndex]="selectedIndex()!"
+    (close)="closeViewer()"
+  />
+}

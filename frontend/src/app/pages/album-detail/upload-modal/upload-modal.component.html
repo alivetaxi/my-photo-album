@@ -1,0 +1,30 @@
+<div class="backdrop" (click)="close()"></div>
+
+<div class="modal">
+  <h2>Upload photos</h2>
+
+  <input type="file" multiple (change)="onFilesSelected($event.target)" />
+
+  @if (files().length > 0) {
+    <p>{{ files().length }} files selected</p>
+  }
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <div class="actions">
+    <button (click)="close()">Cancel</button>
+
+    <button
+      (click)="upload()"
+      [disabled]="uploading() || files().length === 0"
+    >
+      @if (uploading()) {
+        Uploading...
+      } @else {
+        Upload
+      }
+    </button>
+  </div>
+</div>
