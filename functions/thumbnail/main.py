@@ -41,12 +41,20 @@ def generate_thumbnail(cloud_event: CloudEvent):
     try:
         image_bytes = blob.download_as_bytes()
         img = Image.open(io.BytesIO(image_bytes))
+        img.load()  # ensure image is fully loaded
+        if img.mode not in ("RGB", "RGBA"):
+            img = img.convert("RGB")
+        elif img.mode == "RGBA":
+            img = img.convert("RGB")
+
         img.thumbnail((512, 512))
 
         out = io.BytesIO()
         img.save(out, format="WEBP")
+        out.seek(0)
 
         thumb_path = f"albums/thumb/{photo_id}.webp"
+        print(f"Uploading thumbnail to {thumb_path}")
         bucket.blob(thumb_path).upload_from_string(
             out.getvalue(),
             content_type="image/webp"
