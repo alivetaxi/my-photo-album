@@ -151,11 +151,7 @@ def update_photo(request, photo_id):
     return "", 200
 
 
-def redirect_photo(request, photo_id):
-    ctx = get_auth_context(request)
-    if not ctx.uid:
-        return unauthorized()
-
+def redirect_photo(photo_id):
     snap = db.collection("photos").document(photo_id).get()
     if not snap.exists:
         return {"message": "Photo not found"}, 404

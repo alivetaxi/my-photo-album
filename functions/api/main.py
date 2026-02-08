@@ -60,7 +60,7 @@ def main(request):
             return delete_photo(request, photo_id)
 
         if method == "GET":
-            return redirect_photo(request, photo_id)
+            return redirect_photo(photo_id)
 
     if path.startswith("/photos/") and path.endswith("/retry-thumbnail"):
         photo_id = path.split("/")[2]
