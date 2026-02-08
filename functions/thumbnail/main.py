@@ -98,6 +98,8 @@ def parse_exif_date(img):
             if tag_id in TAGS
         }
 
+        print(f"Parsed EXIF data: {exif_data}")
+
         raw_taken = exif_data.get("DateTimeOriginal")
         if raw_taken:
             # EXIF format: YYYY:MM:DD HH:MM:SS
