@@ -83,45 +83,57 @@ def create_photo(request):
     files = body.get("files", [])
     description = body.get("description")
 
-    # --- 基本驗證 ---
     if not album_id or not media_type or not files:
         return {"message": "albumId, mediaType and files are required"}, 400
 
     if media_type not in VALID_MEDIA_TYPES:
         return {"message": "Invalid mediaType"}, 400
 
-    for f in files:
-        if f.get("type") not in VALID_FILE_TYPES:
-            return {"message": "Invalid file type"}, 400
-        if not f.get("sha256") or not f.get("gcsPath"):
-            return {"message": "Each file must have sha256 and gcsPath"}, 400
+    image_files = [f for f in files if f.get("type") == "IMAGE"]
+    video_files = [f for f in files if f.get("type") == "VIDEO"]
 
-    # --- mediaType 對 files 的語意檢查（v1 最小） ---
-    image_files = [f for f in files if f["type"] == "IMAGE"]
-    video_files = [f for f in files if f["type"] == "VIDEO"]
+    if len(image_files) != 1:
+        return {"message": "Exactly one IMAGE file is required"}, 400
 
-    if media_type == "IMAGE" and len(image_files) != 1:
-        return {"message": "IMAGE must have exactly one IMAGE file"}, 400
+    if media_type in {"VIDEO", "LIVE_PHOTO"} and len(video_files) != 1:
+        return {"message": f"{media_type} must include exactly one VIDEO file"}, 400
 
-    if media_type == "VIDEO" and len(video_files) != 1:
-        return {"message": "VIDEO must have exactly one VIDEO file"}, 400
+    image = image_files[0]
+    photo_id = image["sha256"]
 
-    if media_type == "LIVE_PHOTO":
-        if len(image_files) != 1 or len(video_files) != 1:
-            return {"message": "LIVE_PHOTO must have 1 IMAGE and 1 VIDEO"}, 400
+    files_obj = {
+        "image": {
+            "sha256": photo_id,
+            "contentType": image.get("contentType"),
+            "gcsPath": f"albums/originals/{photo_id}/image"
+        }
+    }
 
-    ref = db.collection("photos").document()
+    if video_files:
+        video = video_files[0]
+        files_obj["video"] = {
+            "sha256": video.get("sha256"),
+            "contentType": video.get("contentType"),
+            "gcsPath": f"albums/originals/{photo_id}/video"
+        }
+
+    ref = db.collection("photos").document(photo_id)
+
+    if ref.get().exists:
+        return {"id": photo_id}, 200
+
     ref.set({
+        "photoId": photo_id,
         "albumId": album_id,
         "mediaType": media_type,
-        "files": files,
+        "files": files_obj,
         "description": description,
         "status": "UPLOADED",
         "createdAt": firestore.SERVER_TIMESTAMP,
         "updatedAt": firestore.SERVER_TIMESTAMP
     })
 
-    return {"id": ref.id}, 201
+    return {"id": photo_id}, 201
 
 
 def update_photo(request, photo_id):
@@ -166,7 +178,7 @@ def get_upload_url(request):
         return {"message": "sha256 and contentType are required"}, 400
 
     # 使用 sha256 作為檔名（去重）
-    object_path = f"albums/originals/{sha256}"
+    object_path = f"albums/originals/{sha256}/image"
 
     bucket = storage_client.bucket(PHOTO_BUCKET)
     blob = bucket.blob(object_path)
