@@ -1,6 +1,7 @@
+import io
+
 from google.cloud import storage, firestore
 from PIL import Image
-import io
 from cloudevents.http import CloudEvent
 import functions_framework
 
@@ -15,31 +16,27 @@ def generate_thumbnail(cloud_event: CloudEvent):
     object_path = data["name"]
     bucket_name = data["bucket"]
 
-    # 只處理 original IMAGE 檔
-    if not object_path.startswith("albums/originals/"):
+    # 只處理 original IMAGE 檔（albums/originals/{photoId}/image）
+    if not object_path.startswith("albums/originals/") or not object_path.endswith("/image"):
         return
 
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(object_path)
+    photo_id = object_path.split("/")[-2]
 
-    # 找出對應的 photo
-    photos = db.collection("photos") \
-        .where("files", "array_contains_any", [
-            {"gcsPath": object_path}
-        ]) \
-        .limit(1) \
-        .get()
+    photo_ref = db.collection("photos").document(photo_id)
+    snap = photo_ref.get()
 
-    if not photos:
+    if not snap.exists:
         return
 
-    photo_ref = photos[0].reference
-    photo = photos[0].to_dict()
+    photo = snap.to_dict()
 
     # 只有 IMAGE / LIVE_PHOTO 需要 thumbnail
     if photo["mediaType"] == "VIDEO":
         photo_ref.update({"status": "READY"})
         return
+
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(object_path)
 
     try:
         image_bytes = blob.download_as_bytes()
@@ -49,14 +46,16 @@ def generate_thumbnail(cloud_event: CloudEvent):
         out = io.BytesIO()
         img.save(out, format="WEBP")
 
-        thumb_path = object_path.replace("originals", "thumb")
+        thumb_path = f"albums/thumb/{photo_id}.webp"
         bucket.blob(thumb_path).upload_from_string(
             out.getvalue(),
             content_type="image/webp"
         )
 
         photo_ref.update({
-            "thumbUrl": thumb_path,
+            "thumb": {
+                "gcsPath": thumb_path
+            },
             "status": "READY"
         })
 
