@@ -49,7 +49,7 @@ def list_albums(request):
                 "id": album_id,
                 **album,
                 "photoCount": photo_count,
-                "coverThumbnailPath": cover_thumb,
+                "coverThumbPath": cover_thumb,
             }
         )
 
