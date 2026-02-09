@@ -25,8 +25,8 @@ def list_albums(request):
                 .where("albumId", "==", album_id)
                 .count()
             )
-            count_result = count_query.get()[0]
-            photo_count = count_result.value
+            count_result = count_query.get()
+            photo_count = count_result[0]["count"]
         except Exception as e:
             print(f"Failed to count photos for album {album_id}: {e}")
             photo_count = 0
