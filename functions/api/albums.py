@@ -20,14 +20,11 @@ def list_albums(request):
 
         # Count photos in album
         try:
-            count_query = (
-                db.collection("photos")
-                .where("albumId", "==", album_id)
-                .count()
-            )
-            count_result = count_query.get()
-            print(f"Count result for album {album_id}: {count_result}")
-            photo_count = count_result[0]["count"]
+            photo_count = db.collection("photos") \
+                .where("albumId", "==", album_id) \
+                .count(alias="photoCount") \
+                .get()[0] \
+                .get("photoCount")
         except Exception as e:
             print(f"Failed to count photos for album {album_id}: {e}")
             photo_count = 0
@@ -40,7 +37,7 @@ def list_albums(request):
             .get()
 
         for p in photo_docs:
-            cover_thumb = p.to_dict().get("thumbnailPath")
+            cover_thumb = p.to_dict().get("thumb", {}).get("gcsPath")
             break
 
         result.append(
