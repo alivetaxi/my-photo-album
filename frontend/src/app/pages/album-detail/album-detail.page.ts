@@ -1,16 +1,28 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { AlbumDetailService, Photo } from './album-detail.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { UploadModalComponent } from './upload-modal/upload-modal.component';
 import { PhotoViewerComponent } from './photo-viewer/photo-viewer.component';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { UploadPhotoDialog } from './dialogs/upload-photo-dialog';
 
 @Component({
   standalone: true,
   selector: 'album-detail-page',
   templateUrl: './album-detail.page.html',
-  imports: [UploadModalComponent, PhotoViewerComponent],
+  styleUrls: ['./album-detail.page.scss'],
+  imports: [
+    PhotoViewerComponent,
+    MatCardModule,
+    MatButtonModule,
+    MatGridListModule,
+    MatIconModule
+  ]
 })
 export class AlbumDetailPage {
   private route = inject(ActivatedRoute);
@@ -19,7 +31,15 @@ export class AlbumDetailPage {
 
   readonly albumId = this.route.snapshot.paramMap.get('albumId')!;
 
-  showUpload = signal(false);
+  readonly photos = this.service.photos;
+  readonly albumTitle = this.service.albumTitle;
+  readonly isAdmin = computed(() => this.auth.isAdmin());
+  readonly loading = this.service.loading;
+  readonly error = this.service.error;
+  readonly hasMore = this.service.hasMore;
+
+  readonly dialog = inject(MatDialog);
+
   selectedIndex = signal<number | null>(null);
 
   constructor() {
@@ -28,7 +48,7 @@ export class AlbumDetailPage {
 
   canRetry(photo: Photo): boolean {
     return (
-      this.auth.isAdmin() &&
+      this.isAdmin() &&
       photo.status === 'FAILED' &&
       photo.mediaType !== 'VIDEO'
     );
@@ -42,24 +62,16 @@ export class AlbumDetailPage {
     this.service.loadMore();
   }
 
-  openOriginal(photo: Photo): void {
-    const image = photo.files.find(f => f.type === 'IMAGE');
-    if (!image) return;
+  uploadPhotos() {
+    const dialogRef = this.dialog.open(UploadPhotoDialog, {
+      data: { albumId: this.albumId },
+    });
 
-    // v1: assume originals are directly accessible
-    window.open(`/storage/${image.gcsPath}`, '_blank');
-  }
-
-  openUpload() {
-    this.showUpload.set(true);
-  }
-
-  closeUpload() {
-    this.showUpload.set(false);
-  }
-
-  onUploaded() {
-    this.service.reload();
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.service.reload();
+      }
+    });
   }
 
   openViewer(i: number) {

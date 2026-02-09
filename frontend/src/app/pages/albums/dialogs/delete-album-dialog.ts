@@ -16,7 +16,6 @@ import { AlbumDialogData } from './album-dialog-data';
 @Component({
   selector: 'delete-album-dialog',
   templateUrl: 'delete-album-dialog.html',
-  styleUrls: ['album-dialog.scss'],
   imports: [
     MatFormFieldModule,
     MatInputModule,

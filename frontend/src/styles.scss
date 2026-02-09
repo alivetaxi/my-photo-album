@@ -40,3 +40,31 @@ body {
 .spacer {
   flex: 1 1 auto;
 }
+
+.albums-card {
+  max-width: 400px;
+}
+
+mat-card-header {
+  align-items: center;
+}
+
+mat-card-content {
+  padding: 16px !important;
+}
+
+mat-icon {
+  font-size: x-large !important;
+}
+
+mat-grid-tile {
+  cursor: pointer;
+}
+
+mat-grid-tile .mat-grid-tile-content {
+  padding: 0;
+}
+
+.dialog-body {
+  padding: 0 24px;
+}

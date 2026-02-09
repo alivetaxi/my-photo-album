@@ -27,6 +27,7 @@ export class AlbumDetailService {
   private readonly reloadTick = signal(0);
   private readonly albumId = signal<string | null>(null);
 
+  readonly albumTitle = signal<string | null>(null);
   readonly photos = signal<Photo[]>([]);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
@@ -48,12 +49,13 @@ export class AlbumDetailService {
       const params = new HttpParams().set('limit', 50);
 
       this.http
-        .get<{ items: Photo[]; nextCursor?: string }>(
+        .get<{ albumTitle: string; items: Photo[]; nextCursor?: string }>(
           `/api/albums/${albumId}/photos`,
           { params }
         )
         .subscribe({
           next: res => {
+            this.albumTitle.set(res.albumTitle);
             this.photos.set(res.items);
             this.nextCursor.set(res.nextCursor ?? null);
             this.hasMore.set(!!res.nextCursor);

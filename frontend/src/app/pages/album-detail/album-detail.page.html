@@ -1,33 +1,41 @@
-@if (service.loading()) {
-  <p>Loading photos...</p>
-}
+<mat-card class="albums-card" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{ albumTitle() }}</mat-card-title>
+    <span class="spacer"></span>
+    @if (isAdmin()) {
+      <mat-icon fontIcon="add_box" (click)="uploadPhotos()"></mat-icon>
+    }
+  </mat-card-header>
+  <mat-card-content>
+    @if (loading()) {
+      <p>Loading photos...</p>
+    }
+    @if (!loading() && photos().length === 0) {
+      <p>No photos.</p>
+    }
+    @if (error()) {
+      <p class="error">Failed to load photos</p>
+    }
+    @if (photos(); as list) {
+      <mat-grid-list cols="4" rowHeight="1:1">
+        @for (photo of list; track photo.id; let i = $index) {
+          <mat-grid-tile (click)="openViewer(i)">
+            <div class="thumb">
+              <img [src]="'/thumb/' + (photo.thumbPath || 'placeholder.webp')" />
+            </div>
+          </mat-grid-tile>
+        }
+      </mat-grid-list>
+    }
+  </mat-card-content>
+</mat-card>
 
-@if (!service.loading() && service.photos().length === 0) {
-  <p>No photos.</p>
-}
-
-@if (service.error()) {
-  <p class="error">{{ service.error() }}</p>
-}
-
-@if (auth.isAdmin()) {
-  <button (click)="openUpload()">Upload photos</button>
-}
-
-@if (showUpload()) {
-  <app-upload-modal
-    [albumId]="albumId"
-    (closed)="closeUpload()"
-    (uploaded)="onUploaded()"
-  />
-}
-
-<div class="photo-grid">
+<!-- <div class="photo-grid">
   @for (photo of service.photos(); track photo.id; let i = $index) {
     <div class="photo-card">
 
       <img
-        [src]="'/thumb/' + photo.thumbPath || '/assets/placeholder.png'"
+        [src]="'/thumb/' + photo.thumbPath || 'placeholder.webp'"
         (click)="openViewer(i)"
       />
 
@@ -43,9 +51,9 @@
 
     </div>
   }
-</div>
+</div> -->
 
-@if (service.hasMore()) {
+@if (hasMore()) {
   <button
     class="load-more"
     (click)="loadMore()"

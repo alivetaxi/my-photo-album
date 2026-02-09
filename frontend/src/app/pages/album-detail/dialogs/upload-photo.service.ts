@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
@@ -8,21 +8,26 @@ interface UploadUrlResponse {
 }
 
 @Injectable({ providedIn: 'root' })
-export class PhotoUploadService {
+export class UploadPhotoService {
   private http = inject(HttpClient);
 
   uploading = signal(false);
+  progress = signal(0);
   error = signal<string | null>(null);
 
-  async uploadPhotos(albumId: string, files: File[]) {
-    if (files.length === 0) return;
+  async uploadPhotos(albumId: string, photos: File[]) {
+    if (photos.length === 0) return;
+
+    const progessPerPhoto = 100 / photos.length;
 
     this.uploading.set(true);
+    this.progress.set(0);
     this.error.set(null);
 
     try {
-      for (const file of files) {
-        await this.uploadSingle(albumId, file);
+      for (const photo of photos) {
+        await this.uploadSingle(albumId, photo);
+        this.progress.update(current => Math.min(current + progessPerPhoto, 100));
       }
     } catch (e) {
       console.error(e);
@@ -33,32 +38,32 @@ export class PhotoUploadService {
     }
   }
 
-  private async uploadSingle(albumId: string, file: File) {
-    const sha256 = await this.calculateSha256(file);
+  private async uploadSingle(albumId: string, photo: File) {
+    const sha256 = await this.calculateSha256(photo);
 
     const { uploadUrl, gcsPath } = await firstValueFrom(
       this.http.post<UploadUrlResponse>('/api/photos/upload-url', {
         sha256,
-        contentType: file.type,
+        contentType: photo.type,
       })
     );
 
     await fetch(uploadUrl, {
       method: 'PUT',
       headers: {
-        'Content-Type': file.type,
+        'Content-Type': photo.type,
       },
-      body: file,
+      body: photo,
     });
 
     await firstValueFrom(
       this.http.post('/api/photos', {
         albumId,
-        mediaType: this.detectMediaType(file),
+        mediaType: this.detectMediaType(photo),
         files: [
           {
-            type: this.detectMediaType(file),
-            contentType: file.type,
+            type: this.detectMediaType(photo),
+            contentType: photo.type,
             sha256,
             gcsPath,
           },

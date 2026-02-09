@@ -16,7 +16,6 @@ import { AlbumDialogData } from './album-dialog-data';
 @Component({
   selector: 'create-album-dialog',
   templateUrl: 'create-album-dialog.html',
-  styleUrls: ['album-dialog.scss'],
   imports: [
     MatFormFieldModule,
     MatInputModule,
