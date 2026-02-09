@@ -45,7 +45,7 @@ export class AlbumsPage {
 
   deleteAlbum(album: Album): void {
     const dialogRef = this.dialog.open(DeleteAlbumDialog, {
-      data: { title: album.title, isPublic: album.isPublic, photoCount: album.photoCount },
+      data: { title: album.title, photoCount: album.photoCount },
     });
 
     dialogRef.afterClosed().subscribe(result => {
