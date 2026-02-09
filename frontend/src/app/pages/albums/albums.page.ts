@@ -3,11 +3,17 @@ import { Router } from '@angular/router';
 
 import { AlbumsService, Album } from './albums.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   standalone: true,
   selector: 'albums-page',
   templateUrl: './albums.page.html',
+  styleUrls: ['./albums.page.scss'],
+  imports: [MatCardModule, MatButtonModule, MatGridListModule, MatIconModule],
 })
 export class AlbumsPage {
   private router = inject(Router);

@@ -1,29 +1,39 @@
-<h1>Albums</h1>
-
-@if (loading()) {
-  <p>Loading...</p>
-}
-
-@if (error()) {
-  <p class="error">{{ error() }}</p>
-}
-
-@if (albums(); as list) {
-  <ul>
-    @for (album of list; track album.id) {
-      <li>
-        <span (click)="open(album)">
-          {{ album.title }}
-        </span>
-
-        @if (isAdmin()) {
-          <button (click)="deleteAlbum(album)">Delete</button>
-        }
-      </li>
+<mat-card class="albums-card" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Albums</mat-card-title>
+    <span class="spacer"></span>
+    @if (isAdmin()) {
+      <mat-icon fontIcon="add_box" (click)="createAlbum()"></mat-icon>
     }
-  </ul>
-}
-
-@if (isAdmin()) {
-  <button (click)="createAlbum()">Create Album</button>
-}
+  </mat-card-header>
+  <mat-card-content>
+    @if (loading()) {
+      <div class="skeleton-grid">
+        @for (_ of [1,2,3,4,5,6]; track _) {
+          <div class="album-skeleton"></div>
+        }
+      </div>
+    }
+    @if (error()) {
+      <p class="error">Failed to load albums</p>
+    }
+    @if (albums(); as list) {
+      <mat-grid-list cols="2" rowHeight="1:1">
+        @for (album of list; track album.id) {
+          <mat-grid-tile (click)="open(album)">
+            <div class="cover">
+              <img [src]="'/thumb/' + (album.coverThumbPath || 'placeholder.webp')" />
+            </div>
+            <mat-grid-tile-footer>
+              <span>{{ album.title }} ({{ album.photoCount }})</span>
+              <span class="spacer"></span>
+              @if (isAdmin()) {
+                <mat-icon fontIcon="delete" (click)="deleteAlbum(album); $event.stopPropagation()"></mat-icon>
+              }
+            </mat-grid-tile-footer>
+          </mat-grid-tile>
+        }
+      </mat-grid-list>
+    }
+  </mat-card-content>
+</mat-card>

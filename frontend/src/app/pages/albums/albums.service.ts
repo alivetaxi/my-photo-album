@@ -13,6 +13,8 @@ export interface Album {
   isPublic: boolean;
   coverUrl?: string;
   createdAt: string; // ISO string
+  photoCount: number;
+  coverThumbPath?: string;
 }
 
 @Injectable({ providedIn: 'root' })
