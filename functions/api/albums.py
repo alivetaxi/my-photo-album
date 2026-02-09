@@ -22,9 +22,9 @@ def list_albums(request):
         try:
             photo_count = db.collection("photos") \
                 .where("albumId", "==", album_id) \
-                .count(alias="photoCount") \
-                .get()[0] \
-                .get("photoCount")
+                .count() \
+                .get()[0][0] \
+                .value
         except Exception as e:
             print(f"Failed to count photos for album {album_id}: {e}")
             photo_count = 0
