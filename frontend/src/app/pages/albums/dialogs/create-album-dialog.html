@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Create Album</h2>
+<div class="dialog-body">
+  <mat-form-field>
+    <mat-label>Title</mat-label>
+    <input type="text" matInput name="title" required [(ngModel)]="title" #titleModel="ngModel" 
+           placeholder="Enter album title">
+    @if (titleModel.invalid && titleModel.touched) {
+      <mat-error>Title is required</mat-error>
+    }
+  </mat-form-field>
+  <div class="radio-group">
+    <mat-radio-group aria-label="Select an option" name="isPublic" [(ngModel)]="isPublic">
+      <mat-radio-button [value]="true">Public</mat-radio-button>
+      <mat-radio-button [value]="false">Private</mat-radio-button>
+    </mat-radio-group>
+  </div>
+</div>
+<mat-dialog-actions>
+  <button matButton (click)="cancel()">Cancel</button>
+  <button matButton [disabled]="titleModel.invalid" 
+          [mat-dialog-close]="{title: title(), isPublic: isPublic()}" cdkFocusInitial>Create</button>
+</mat-dialog-actions>

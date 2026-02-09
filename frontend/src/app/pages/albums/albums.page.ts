@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { CreateAlbumDialog } from './dialogs/create-album-dialog';
 
 @Component({
   standalone: true,
@@ -26,12 +28,18 @@ export class AlbumsPage {
 
   readonly isAdmin = computed(() => this.auth.isAdmin());
 
-  createAlbum(): void {
-    const title = prompt('Album title');
-    if (!title) return;
+  readonly dialog = inject(MatDialog);
 
-    const isPublic = confirm('Make this album public?');
-    this.albumsService.createAlbum({ title, isPublic });
+  createAlbum(): void {
+    const dialogRef = this.dialog.open(CreateAlbumDialog, {
+      data: { title: '', isPublic: false },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.albumsService.createAlbum({ title: result.title, isPublic: result.isPublic });
+      }
+    });
   }
 
   deleteAlbum(album: Album): void {
