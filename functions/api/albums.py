@@ -11,8 +11,49 @@ def list_albums(request):
     if ctx.role not in ("ADMIN", "FAMILY"):
         query = query.where("isPublic", "==", True)
 
-    albums = [doc.to_dict() | {"id": doc.id} for doc in query.stream()]
-    return albums, 200
+    album_docs = list(query.stream())
+    result = []
+
+    for doc in album_docs:
+        album = doc.to_dict()
+        album_id = doc.id
+
+        # Count photos in album
+        try:
+            count_query = (
+                db.collection("photos")
+                .where("albumId", "==", album_id)
+                .count()
+            )
+            count_result = count_query.get()[0]
+            photo_count = count_result.value
+        except Exception as e:
+            print(f"Failed to count photos for album {album_id}: {e}")
+            photo_count = 0
+
+        # Get one photo for cover thumbnail
+        cover_thumb = None
+        photo_docs = (
+            db.collection("photos")
+            .where("albumId", "==", album_id)
+            .limit(1)
+            .stream()
+        )
+
+        for p in photo_docs:
+            cover_thumb = p.to_dict().get("thumbnailPath")
+            break
+
+        result.append(
+            {
+                "id": album_id,
+                **album,
+                "photoCount": photo_count,
+                "coverThumbnailPath": cover_thumb,
+            }
+        )
+
+    return result, 200
 
 
 def create_album(request):
