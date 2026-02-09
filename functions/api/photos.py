@@ -64,6 +64,7 @@ def list_photos(request, album_id):
     next_cursor = encode_cursor(docs[-1]) if len(docs) == limit else None
 
     return {
+        "albumTitle": album.to_dict().get("title"),
         "items": items,
         "nextCursor": next_cursor
     }, 200
