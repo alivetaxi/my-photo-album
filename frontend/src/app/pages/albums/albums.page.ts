@@ -9,6 +9,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateAlbumDialog } from './dialogs/create-album-dialog';
+import { DeleteAlbumDialog } from './dialogs/delete-album-dialog';
 
 @Component({
   standalone: true,
@@ -43,8 +44,15 @@ export class AlbumsPage {
   }
 
   deleteAlbum(album: Album): void {
-    if (!confirm(`Delete album "${album.title}"?`)) return;
-    this.albumsService.deleteAlbum(album.id);
+    const dialogRef = this.dialog.open(DeleteAlbumDialog, {
+      data: { title: album.title, isPublic: album.isPublic, photoCount: album.photoCount },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.albumsService.deleteAlbum(album.id);
+      }
+    });
   }
 
   open(album: Album): void {

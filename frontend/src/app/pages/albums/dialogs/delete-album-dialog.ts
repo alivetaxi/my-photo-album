@@ -1,4 +1,4 @@
-import { Component, inject, model } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -14,8 +14,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { AlbumDialogData } from './album-dialog-data';
 
 @Component({
-  selector: 'create-album-dialog',
-  templateUrl: 'create-album-dialog.html',
+  selector: 'delete-album-dialog',
+  templateUrl: 'delete-album-dialog.html',
   styleUrls: ['album-dialog.scss'],
   imports: [
     MatFormFieldModule,
@@ -28,11 +28,9 @@ import { AlbumDialogData } from './album-dialog-data';
     MatRadioModule
   ],
 })
-export class CreateAlbumDialog {
-  readonly dialogRef = inject(MatDialogRef<CreateAlbumDialog>);
+export class DeleteAlbumDialog {
+  readonly dialogRef = inject(MatDialogRef<DeleteAlbumDialog>);
   readonly data = inject<AlbumDialogData>(MAT_DIALOG_DATA);
-  readonly title = model(this.data.title);
-  readonly isPublic = model(this.data.isPublic);
 
   cancel(): void {
     this.dialogRef.close();

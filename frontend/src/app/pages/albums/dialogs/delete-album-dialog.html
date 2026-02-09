@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Delete Album</h2>
+<div class="dialog-body">
+  @if (data.photoCount > 0) {
+    <p>Album <b>{{ data.title }}</b> contains {{ data.photoCount }} photos. Please delete photos first.</p>
+  } @else {
+    <p>Are you sure you want to delete album <b>{{ data.title }}</b>?</p>
+  }
+</div>
+<mat-dialog-actions>
+  <button matButton (click)="cancel()">Cancel</button>
+  @if (data.photoCount === 0) {
+    <button matButton mat-dialog-close="true" cdkFocusInitial>Delete</button>
+  }
+</mat-dialog-actions>
