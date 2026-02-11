@@ -30,43 +30,4 @@
   </mat-card-content>
 </mat-card>
 
-<!-- <div class="photo-grid">
-  @for (photo of service.photos(); track photo.id; let i = $index) {
-    <div class="photo-card">
-
-      <img
-        [src]="'/thumb/' + photo.thumbPath || 'placeholder.webp'"
-        (click)="openViewer(i)"
-      />
-
-      @if (photo.description) {
-        <p class="desc">{{ photo.description }}</p>
-      }
-
-      @if (canRetry(photo)) {
-        <button class="retry-btn" (click)="retryThumbnail(photo)">
-          Retry thumbnail
-        </button>
-      }
-
-    </div>
-  }
-</div> -->
-
-@if (hasMore()) {
-  <button
-    class="load-more"
-    (click)="loadMore()"
-    [disabled]="service.loading()"
-  >
-    Load more
-  </button>
-}
-
-@if (selectedIndex() !== null) {
-  <app-photo-viewer
-    [photos]="service.photos()"
-    [startIndex]="selectedIndex()!"
-    (close)="closeViewer()"
-  />
-}
+<app-photo-viewer />

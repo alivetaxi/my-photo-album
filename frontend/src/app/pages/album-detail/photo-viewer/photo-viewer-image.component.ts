@@ -1,27 +1,27 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { PhotoViewerService } from './photo-viewer.service';
 
 @Component({
   selector: 'app-photo-viewer-image',
   standalone: true,
-  template: `
-    <img
-      [src]="src"
-      class="image"
-      loading="eager"
-    />
-  `,
-  styles: [`
-    .image {
-      max-width: 100vw;
-      max-height: 100vh;
-      object-fit: contain;
-    }
-  `]
+  imports: [CommonModule, MatIconModule],
+  templateUrl: './photo-viewer-image.component.html',
+  styleUrl: './photo-viewer-image.component.scss',
 })
 export class PhotoViewerImageComponent {
-  @Input({ required: true }) photo!: any;
+  viewer = inject(PhotoViewerService);
 
-  get src() {
-    return `/api/photos/${this.photo.id}`;
+  private startX = 0;
+
+  onPointerDown(e: PointerEvent) {
+    this.startX = e.clientX;
+  }
+
+  onPointerUp(e: PointerEvent) {
+    const delta = e.clientX - this.startX;
+    if (Math.abs(delta) < 40) return;
+    delta < 0 ? this.viewer.next() : this.viewer.prev();
   }
 }

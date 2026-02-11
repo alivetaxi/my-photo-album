@@ -1,0 +1,23 @@
+.viewer {
+  position: fixed;
+  inset: 0;
+  background: #2b2b2b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.content {
+  width: 100%;
+  max-width: 1200px;
+  height: 80vh !important;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .content {
+    height: 100vh;
+  }
+}

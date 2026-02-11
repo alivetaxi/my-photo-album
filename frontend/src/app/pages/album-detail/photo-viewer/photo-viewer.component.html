@@ -1,17 +1,8 @@
-<div class="overlay" (click)="closeViewer()">
-  <div class="viewer" (click)="$event.stopPropagation()">
-
-    <button class="close" (click)="closeViewer()">✕</button>
-
-    @if (hasPrev()) {
-      <button class="nav left" (click)="prev()">‹</button>
-    }
-    
-    <app-photo-viewer-image [photo]="currentPhoto()" />
-
-    @if (hasNext()) {
-      <button class="nav right" (click)="next()">›</button>
-    }
-
+@if (viewer.opened()) {
+  <div class="viewer" (click)="viewer.close()" >
+    <div class="content" (click)="$event.stopPropagation()">
+      <app-photo-viewer-image />
+      <app-photo-viewer-strip />
+    </div>
   </div>
-</div>
+}

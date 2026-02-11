@@ -1,0 +1,10 @@
+<div class="thumb-strip">
+  @for (p of viewer.visibleThumbs(); track p.id) {
+    <img
+      class="thumb"
+      [class.active]="p.id === viewer.current().id"
+      [src]="`/thumb/${p.thumbPath}`"
+      (click)="viewer.jumpTo(viewer.photos().indexOf(p))"
+    />
+  }
+</div>

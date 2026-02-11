@@ -1,0 +1,21 @@
+.thumb-strip {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+}
+
+.thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  opacity: 0.6;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+
+  &.active {
+    opacity: 1;
+    outline: 2px solid white;
+  }
+}

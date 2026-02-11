@@ -1,0 +1,18 @@
+<div class="main">
+  <button class="nav left" (click)="viewer.prev()">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+
+  @if (viewer.current()) {
+    <img
+      class="main-image"
+      [src]="`/api/photos/${viewer.current()!.id}`"
+      (pointerdown)="onPointerDown($event)"
+      (pointerup)="onPointerUp($event)"
+    />
+  }
+
+  <button class="nav right" (click)="viewer.next()">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+</div>

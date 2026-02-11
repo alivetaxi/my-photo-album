@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { AlbumDetailService, Photo } from './album-detail.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { PhotoViewerService } from './photo-viewer/photo-viewer.service';
 import { PhotoViewerComponent } from './photo-viewer/photo-viewer.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,11 +18,11 @@ import { UploadPhotoDialog } from './dialogs/upload-photo-dialog';
   templateUrl: './album-detail.page.html',
   styleUrls: ['./album-detail.page.scss'],
   imports: [
-    PhotoViewerComponent,
     MatCardModule,
     MatButtonModule,
     MatGridListModule,
-    MatIconModule
+    MatIconModule,
+    PhotoViewerComponent
   ]
 })
 export class AlbumDetailPage {
@@ -39,11 +40,14 @@ export class AlbumDetailPage {
   readonly hasMore = this.service.hasMore;
 
   readonly dialog = inject(MatDialog);
-
-  selectedIndex = signal<number | null>(null);
+  readonly viewer = inject(PhotoViewerService);
 
   constructor() {
     this.service.setAlbum(this.albumId);
+
+    this.viewer.loadMore = async () => {
+      await this.service.loadMore();
+    };
   }
 
   canRetry(photo: Photo): boolean {
@@ -74,11 +78,12 @@ export class AlbumDetailPage {
     });
   }
 
-  openViewer(i: number) {
-    this.selectedIndex.set(i);
-  }
+  openViewer(index: number) {
+    const viewerPhotos = this.photos().map(p => ({
+      id: p.id,
+      thumbPath: p.thumbPath ?? '',
+    }));
 
-  closeViewer() {
-    this.selectedIndex.set(null);
+    this.viewer.open(viewerPhotos, index);
   }
 }
