@@ -3,7 +3,7 @@
     <img
       class="thumb"
       [class.active]="p.id === viewer.current().id"
-      [src]="`/thumb/${p.thumbPath}`"
+      [src]="`/thumb/${p.thumbPath || 'placeholder.webp'}`"
       (click)="viewer.jumpTo(viewer.photos().indexOf(p))"
     />
   }
