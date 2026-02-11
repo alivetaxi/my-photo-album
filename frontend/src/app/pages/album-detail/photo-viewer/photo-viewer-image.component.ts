@@ -15,13 +15,20 @@ export class PhotoViewerImageComponent {
 
   private startX = 0;
 
-  onPointerDown(e: PointerEvent) {
-    this.startX = e.clientX;
+  onTouchStart(event: TouchEvent) {
+    this.startX = event.touches[0].clientX;
   }
 
-  onPointerUp(e: PointerEvent) {
-    const delta = e.clientX - this.startX;
-    if (Math.abs(delta) < 40) return;
-    delta < 0 ? this.viewer.next() : this.viewer.prev();
+  onTouchEnd(event: TouchEvent) {
+    const endX = event.changedTouches[0].clientX;
+    const delta = endX - this.startX;
+
+    if (Math.abs(delta) < 20) return;
+
+    if (delta < 0) {
+      this.viewer.next();
+    } else {
+      this.viewer.prev();
+    }
   }
 }

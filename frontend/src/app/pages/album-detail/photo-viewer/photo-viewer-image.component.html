@@ -7,8 +7,8 @@
     <img
       class="main-image"
       [src]="`/api/photos/${viewer.current()!.id}`"
-      (pointerdown)="onPointerDown($event)"
-      (pointerup)="onPointerUp($event)"
+      (touchstart)="onTouchStart($event)"
+      (touchend)="onTouchEnd($event)"
     />
   }
 
