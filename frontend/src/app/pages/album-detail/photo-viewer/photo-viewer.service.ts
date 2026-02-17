@@ -3,6 +3,8 @@ import { Injectable, signal, computed } from '@angular/core';
 export interface ViewerPhoto {
   id: string;
   thumbPath: string;
+  description?: string;
+  takenAt?: any;
 }
 
 @Injectable({ providedIn: 'root' })

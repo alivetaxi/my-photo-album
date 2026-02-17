@@ -1,18 +1,28 @@
 <div class="main">
-  <button class="nav left" (click)="viewer.prev()">
-    <mat-icon>chevron_left</mat-icon>
-  </button>
+
+  <div class="image-container">
+    @if (viewer.current()) {
+      <img
+        class="main-image"
+        [src]="`/api/photos/${viewer.current()!.id}`"
+        (touchstart)="onTouchStart($event)"
+        (touchend)="onTouchEnd($event)"
+      />
+    }
+  </div>
 
   @if (viewer.current()) {
-    <img
-      class="main-image"
-      [src]="`/api/photos/${viewer.current()!.id}`"
-      (touchstart)="onTouchStart($event)"
-      (touchend)="onTouchEnd($event)"
-    />
-  }
+    <div class="info">
+      @if (viewer.current().takenAt) {
+        <div class="date">
+          {{ viewer.current().takenAt | date:'yyyy-MM-dd HH:mm' }}
+        </div>
+      }
 
-  <button class="nav right" (click)="viewer.next()">
-    <mat-icon>chevron_right</mat-icon>
-  </button>
-</div>
+      @if (viewer.current().description) {
+        <div class="desc">
+          {{ viewer.current().description }}
+        </div>
+      }
+    </div>
+  }

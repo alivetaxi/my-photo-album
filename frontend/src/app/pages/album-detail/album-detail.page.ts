@@ -82,6 +82,8 @@ export class AlbumDetailPage {
     const viewerPhotos = this.photos().map(p => ({
       id: p.id,
       thumbPath: p.thumbPath ?? '',
+      description: p.description,
+      takenAt: p.takenAt ?? p.createdAt
     }));
 
     this.viewer.open(viewerPhotos, index);

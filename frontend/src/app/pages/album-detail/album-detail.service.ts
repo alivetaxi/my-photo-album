@@ -17,6 +17,7 @@ export interface Photo {
   description?: string;
   status: 'UPLOADED' | 'READY' | 'FAILED';
   createdAt: any;
+  takenAt?: any;
 }
 
 @Injectable({ providedIn: 'root' })
